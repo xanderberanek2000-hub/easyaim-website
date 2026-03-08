@@ -1,37 +1,7 @@
 import { motion } from "framer-motion"
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card"
 import { CheckCircle2, AlertTriangle, XCircle, Clock } from "lucide-react"
-
-const statuses = [
-  {
-    game: "Roblox",
-    tool: "EasyAim for Roblox",
-    status: "online",
-    lastUpdated: "2 hours ago",
-    version: "v2.4.1"
-  },
-  {
-    game: "Roblox",
-    tool: "EasyAim Lite",
-    status: "online",
-    lastUpdated: "1 day ago",
-    version: "v1.2.0"
-  },
-  {
-    game: "CS",
-    tool: "EasyAim for CS",
-    status: "maintenance",
-    lastUpdated: "3 days ago",
-    version: "Beta 0.9"
-  },
-  {
-    game: "Rust",
-    tool: "EasyAim for Rust",
-    status: "updating",
-    lastUpdated: "Just now",
-    version: "v3.0.0"
-  }
-]
+import { useSiteData } from "@/src/context/SiteContext"
 
 const getStatusIcon = (status: string) => {
   switch (status) {
@@ -60,6 +30,12 @@ const getStatusColor = (status: string) => {
 }
 
 export function Status() {
+  const { data } = useSiteData()
+  
+  const onlineCount = data.statuses.filter(s => s.status === "online").length
+  const updatingCount = data.statuses.filter(s => s.status === "updating").length
+  const maintenanceCount = data.statuses.filter(s => s.status === "maintenance").length
+
   return (
     <div className="container mx-auto px-4 max-w-5xl py-12">
       <motion.div
@@ -79,7 +55,7 @@ export function Status() {
               <CheckCircle2 className="w-4 h-4 text-emerald-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-emerald-500">2</div>
+              <div className="text-2xl font-bold text-emerald-500">{onlineCount}</div>
               <p className="text-xs text-text-secondary">Fully operational cheats</p>
             </CardContent>
           </Card>
@@ -89,7 +65,7 @@ export function Status() {
               <Clock className="w-4 h-4 text-amber-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-amber-500">1</div>
+              <div className="text-2xl font-bold text-amber-500">{updatingCount}</div>
               <p className="text-xs text-text-secondary">Cheats currently updating</p>
             </CardContent>
           </Card>
@@ -99,15 +75,15 @@ export function Status() {
               <AlertTriangle className="w-4 h-4 text-rose-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-rose-500">1</div>
+              <div className="text-2xl font-bold text-rose-500">{maintenanceCount}</div>
               <p className="text-xs text-text-secondary">Cheats under maintenance</p>
             </CardContent>
           </Card>
         </div>
 
         <div className="space-y-4">
-          {statuses.map((item, index) => (
-            <Card key={index} className="border-border/50 bg-surface/50 hover:bg-surface transition-colors">
+          {data.statuses.map((item) => (
+            <Card key={item.id} className="border-border/50 bg-surface/50 hover:bg-surface transition-colors">
               <CardContent className="flex flex-col sm:flex-row items-center justify-between p-6">
                 <div className="flex items-center mb-4 sm:mb-0">
                   <div className={`w-12 h-12 rounded-full flex items-center justify-center mr-4 border ${getStatusColor(item.status)}`}>
@@ -122,7 +98,10 @@ export function Status() {
                   <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border ${getStatusColor(item.status)}`}>
                     {item.status}
                   </span>
-                  <span className="text-xs text-text-secondary mt-2 flex items-center">
+                  <span 
+                    className="text-xs text-text-secondary mt-2 flex items-center cursor-help"
+                    title={item.updatedAt || item.lastUpdated}
+                  >
                     <Clock className="w-3 h-3 mr-1" /> Last updated: {item.lastUpdated}
                   </span>
                 </div>

@@ -1,28 +1,22 @@
+import { useState } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/src/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card"
 import { MessageSquare, HelpCircle, Ticket } from "lucide-react"
-
-const faqs = [
-  {
-    question: "How do I install the software?",
-    answer: "After purchasing, go to your dashboard, complete the verification step, and download the loader. Run the loader as administrator, enter your license key, and launch the game."
-  },
-  {
-    question: "Is it safe to use on my main account?",
-    answer: "While our cheats are designed to be undetected and stream-proof, we always recommend using an alternate account to ensure the absolute safety of your main account."
-  },
-  {
-    question: "How do I reset my HWID?",
-    answer: "You can reset your Hardware ID directly from your dashboard once every 7 days. If you need an immediate reset, please open a support ticket."
-  },
-  {
-    question: "Do you offer refunds?",
-    answer: "Due to the digital nature of our products, we do not offer refunds once a license key has been activated. Please read our terms of service for more details."
-  }
-]
+import { useSiteData } from "@/src/context/SiteContext"
 
 export function Support() {
+  const { data } = useSiteData()
+  const [selectedCategory, setSelectedCategory] = useState("All")
+
+  const categories = ["All", ...Array.from(new Set(data.faqs.map(faq => faq.category || "General")))]
+
+  const filteredFaqs = data.faqs.filter(faq => {
+    if (selectedCategory === "All") return true
+    const cat = faq.category || "General"
+    return cat === selectedCategory
+  })
+
   return (
     <div className="container mx-auto px-4 max-w-5xl py-12">
       <motion.div
@@ -45,9 +39,11 @@ export function Support() {
               <CardDescription>Join our Discord server for real-time support, updates, and community chat.</CardDescription>
             </CardHeader>
             <CardContent className="text-center">
-              <Button variant="outline" className="border-neon-purple text-neon-purple hover:bg-neon-purple hover:text-white w-full">
-                Join Discord
-              </Button>
+              <a href={data.discordLink} target="_blank" rel="noopener noreferrer" className="block w-full">
+                <Button variant="outline" className="border-neon-purple text-neon-purple hover:bg-neon-purple hover:text-white w-full">
+                  Join Discord
+                </Button>
+              </a>
             </CardContent>
           </Card>
 
@@ -60,20 +56,44 @@ export function Support() {
               <CardDescription>Open a ticket for billing issues, HWID resets, or technical problems.</CardDescription>
             </CardHeader>
             <CardContent className="text-center">
-              <Button variant="neon" className="w-full">
-                Open a Ticket
-              </Button>
+              <a href={data.supportTicketLink} target="_blank" rel="noopener noreferrer" className="block w-full">
+                <Button variant="neon" className="w-full">
+                  Open a Ticket
+                </Button>
+              </a>
             </CardContent>
           </Card>
         </div>
 
         <div>
           <h2 className="text-2xl font-bold mb-6 flex items-center"><HelpCircle className="mr-2 text-text-secondary" /> Frequently Asked Questions</h2>
+          
+          <div className="flex flex-wrap gap-2 mb-6">
+            {categories.map(category => (
+              <Button 
+                key={category} 
+                variant={selectedCategory === category ? "neon" : "outline"}
+                size="sm"
+                onClick={() => setSelectedCategory(category)}
+                className={selectedCategory === category ? "" : "border-border text-text-secondary"}
+              >
+                {category}
+              </Button>
+            ))}
+          </div>
+
           <div className="space-y-4">
-            {faqs.map((faq, index) => (
-              <Card key={index} className="bg-surface/50">
+            {filteredFaqs.map((faq) => (
+              <Card key={faq.id} className="bg-surface/50">
                 <CardHeader>
-                  <CardTitle className="text-lg">{faq.question}</CardTitle>
+                  <div className="flex justify-between items-start gap-4">
+                    <CardTitle className="text-lg">{faq.question}</CardTitle>
+                    {faq.category && (
+                      <span className="text-xs font-medium bg-surface-hover px-2 py-1 rounded text-text-secondary whitespace-nowrap">
+                        {faq.category}
+                      </span>
+                    )}
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <p className="text-text-secondary">{faq.answer}</p>

@@ -1,8 +1,10 @@
+import { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import { motion } from "framer-motion"
 import { Button } from "@/src/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card"
 import { CheckCircle2, Monitor, Download, ShieldCheck } from "lucide-react"
+import { useSiteData } from "@/src/context/SiteContext"
 
 const pricingPlans = [
   { id: "3-day", name: "3-Day Access", price: "$4.99", duration: "3 Days" },
@@ -14,6 +16,49 @@ const pricingPlans = [
 
 export function Product() {
   const { id } = useParams()
+  const { data } = useSiteData()
+  const [isLoading, setIsLoading] = useState(true)
+  
+  const product = data.products.find(p => p.id === id) || data.products[0]
+
+  useEffect(() => {
+    setIsLoading(true)
+    const timer = setTimeout(() => {
+      setIsLoading(false)
+    }, 600)
+    return () => clearTimeout(timer)
+  }, [id])
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 max-w-7xl py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div>
+            <div className="h-10 bg-surface-hover rounded animate-pulse w-3/4 mb-4" />
+            <div className="h-6 bg-surface-hover rounded animate-pulse w-full mb-2" />
+            <div className="h-6 bg-surface-hover rounded animate-pulse w-5/6 mb-8" />
+            <div className="w-full h-64 bg-surface-hover rounded-xl animate-pulse mb-8" />
+            <div className="space-y-4">
+              <div className="h-8 bg-surface-hover rounded animate-pulse w-1/3" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {[1, 2, 3, 4, 5, 6].map(i => (
+                  <div key={i} className="h-5 bg-surface-hover rounded animate-pulse w-full" />
+                ))}
+              </div>
+            </div>
+          </div>
+          <div>
+            <div className="h-10 bg-surface-hover rounded animate-pulse w-1/2 mb-6" />
+            <div className="space-y-4">
+              {[1, 2, 3, 4, 5].map(i => (
+                <div key={i} className="h-32 bg-surface-hover rounded-xl animate-pulse w-full" />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="container mx-auto px-4 max-w-7xl py-12">
@@ -25,12 +70,12 @@ export function Product() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="text-4xl font-display font-bold mb-2 neon-text-cyan">EasyAim for Roblox</h1>
-            <p className="text-text-secondary text-lg mb-6">Advanced AI aimbot and triggerbot for Roblox.</p>
+            <h1 className="text-4xl font-display font-bold mb-2 neon-text-cyan">{product.name}</h1>
+            <p className="text-text-secondary text-lg mb-6">{product.description}</p>
             
             <div className="rounded-xl overflow-hidden border border-border mb-8">
               <img 
-                src="https://picsum.photos/seed/roblox-aimbot-preview/800/500" 
+                src={product.image} 
                 alt="Product Preview" 
                 className="w-full h-auto"
                 referrerPolicy="no-referrer"
@@ -41,12 +86,9 @@ export function Product() {
               <section>
                 <h3 className="text-2xl font-bold mb-4 flex items-center"><CheckCircle2 className="mr-2 text-neon-cyan" /> Features</h3>
                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-text-secondary">
-                  <li className="flex items-center"><div className="w-1.5 h-1.5 rounded-full bg-neon-cyan mr-2" /> AI Aimbot (Customizable FOV & Smoothness)</li>
-                  <li className="flex items-center"><div className="w-1.5 h-1.5 rounded-full bg-neon-cyan mr-2" /> Color-based Triggerbot</li>
-                  <li className="flex items-center"><div className="w-1.5 h-1.5 rounded-full bg-neon-cyan mr-2" /> Humanized Recoil Control</li>
-                  <li className="flex items-center"><div className="w-1.5 h-1.5 rounded-full bg-neon-cyan mr-2" /> Stream Proof (OBS Bypass)</li>
-                  <li className="flex items-center"><div className="w-1.5 h-1.5 rounded-full bg-neon-cyan mr-2" /> Auto-Update System</li>
-                  <li className="flex items-center"><div className="w-1.5 h-1.5 rounded-full bg-neon-cyan mr-2" /> Undetected Injection</li>
+                  {product.features.map((feature, i) => (
+                    <li key={i} className="flex items-center"><div className="w-1.5 h-1.5 rounded-full bg-neon-cyan mr-2" /> {feature}</li>
+                  ))}
                 </ul>
               </section>
 

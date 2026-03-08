@@ -1,10 +1,13 @@
 import { Link } from "react-router-dom"
 import { motion } from "framer-motion"
 import { Button } from "@/src/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/src/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card"
 import { Crosshair, Shield, Zap, CheckCircle2, Clock } from "lucide-react"
+import { useSiteData } from "@/src/context/SiteContext"
 
 export function Home() {
+  const { data } = useSiteData()
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
@@ -17,7 +20,7 @@ export function Home() {
             transition={{ duration: 0.5 }}
             className="text-5xl md:text-7xl font-display font-bold tracking-tighter mb-6 neon-text-cyan"
           >
-            AI-Powered Aimbots & Triggerbots
+            {data.heroTitle}
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -25,7 +28,7 @@ export function Home() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="text-xl text-text-secondary max-w-2xl mx-auto mb-10"
           >
-            Elevate your gameplay with premium cheats designed to give you the ultimate competitive advantage.
+            {data.heroSubtitle}
           </motion.p>
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -85,69 +88,34 @@ export function Home() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Active Game */}
-            <Card className="neon-border-cyan relative overflow-hidden group cursor-pointer">
-              <div className="absolute inset-0 bg-gradient-to-t from-bg to-transparent z-10" />
-              <img 
-                src="https://picsum.photos/seed/roblox-gameplay/600/400" 
-                alt="Roblox" 
-                className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
-                referrerPolicy="no-referrer"
-              />
-              <CardContent className="relative z-20 pt-6">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-2xl font-bold">Roblox</h3>
-                  <span className="flex items-center text-xs font-bold text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-full">
-                    <CheckCircle2 className="w-3 h-3 mr-1" /> Supported
-                  </span>
-                </div>
-                <p className="text-text-secondary text-sm mb-4">Full suite of AI aimbot and triggerbot features available.</p>
-                <Link to="/product/roblox-aim">
-                  <Button variant="outline" className="w-full hover:bg-neon-cyan hover:text-bg hover:border-neon-cyan">View Cheats</Button>
-                </Link>
-              </CardContent>
-            </Card>
-
-            {/* Coming Soon Games */}
-            <Card className="border-border/50 relative overflow-hidden group opacity-80">
-              <div className="absolute inset-0 bg-gradient-to-t from-bg to-transparent z-10" />
-              <img 
-                src="https://picsum.photos/seed/csgo-gameplay/600/400" 
-                alt="CS" 
-                className="w-full h-48 object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
-                referrerPolicy="no-referrer"
-              />
-              <CardContent className="relative z-20 pt-6">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-2xl font-bold">CS</h3>
-                  <span className="flex items-center text-xs font-bold text-amber-400 bg-amber-400/10 px-2 py-1 rounded-full">
-                    <Clock className="w-3 h-3 mr-1" /> Coming Soon
-                  </span>
-                </div>
-                <p className="text-text-secondary text-sm mb-4">In development. Expected release next month.</p>
-                <Button variant="ghost" className="w-full" disabled>Notify Me</Button>
-              </CardContent>
-            </Card>
-
-            <Card className="border-border/50 relative overflow-hidden group opacity-80">
-              <div className="absolute inset-0 bg-gradient-to-t from-bg to-transparent z-10" />
-              <img 
-                src="https://picsum.photos/seed/rust-gameplay/600/400" 
-                alt="Rust" 
-                className="w-full h-48 object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
-                referrerPolicy="no-referrer"
-              />
-              <CardContent className="relative z-20 pt-6">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-2xl font-bold">Rust</h3>
-                  <span className="flex items-center text-xs font-bold text-amber-400 bg-amber-400/10 px-2 py-1 rounded-full">
-                    <Clock className="w-3 h-3 mr-1" /> Coming Soon
-                  </span>
-                </div>
-                <p className="text-text-secondary text-sm mb-4">Currently in private beta testing phase.</p>
-                <Button variant="ghost" className="w-full" disabled>Notify Me</Button>
-              </CardContent>
-            </Card>
+            {data.games.map((game) => (
+              <Card key={game.id} className={`${game.status === 'Supported' ? 'neon-border-cyan cursor-pointer' : 'border-border/50 opacity-80'} relative overflow-hidden group`}>
+                <div className="absolute inset-0 bg-gradient-to-t from-bg to-transparent z-10" />
+                <img 
+                  src={game.imageUrl} 
+                  alt={game.name} 
+                  className={`w-full h-48 object-cover transition-all duration-500 ${game.status === 'Supported' ? 'group-hover:scale-105' : 'grayscale group-hover:grayscale-0'}`}
+                  referrerPolicy="no-referrer"
+                />
+                <CardContent className="relative z-20 pt-6">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-2xl font-bold">{game.name}</h3>
+                    <span className={`flex items-center text-xs font-bold px-2 py-1 rounded-full ${game.status === 'Supported' ? 'text-emerald-400 bg-emerald-400/10' : 'text-amber-400 bg-amber-400/10'}`}>
+                      {game.status === 'Supported' ? <CheckCircle2 className="w-3 h-3 mr-1" /> : <Clock className="w-3 h-3 mr-1" />} 
+                      {game.status}
+                    </span>
+                  </div>
+                  <p className="text-text-secondary text-sm mb-4">{game.description}</p>
+                  {game.status === 'Supported' && game.productLink ? (
+                    <Link to={game.productLink}>
+                      <Button variant="outline" className="w-full hover:bg-neon-cyan hover:text-bg hover:border-neon-cyan">View Cheats</Button>
+                    </Link>
+                  ) : (
+                    <Button variant="ghost" className="w-full" disabled>Notify Me</Button>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
@@ -157,63 +125,32 @@ export function Home() {
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-display font-bold mb-4">What Our Users Say</h2>
-            <p className="text-text-secondary">Join thousands of satisfied players using EasyAim.</p>
+            <p className="text-text-secondary">Join thousands of satisfied players using {data.siteName}.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="bg-bg border-border/50">
-              <CardContent className="pt-6">
-                <div className="flex text-amber-400 mb-4">
-                  {[...Array(5)].map((_, i) => <span key={i}>★</span>)}
-                </div>
-                <p className="italic text-text-secondary mb-6">"Absolutely incredible cheat. The triggerbot is flawless and the aimbot is highly customizable. Never been detected."</p>
-                <div className="flex items-center">
-                  <div className="w-10 h-10 rounded-full bg-neon-cyan/20 flex items-center justify-center text-neon-cyan font-bold mr-3">
-                    T
+            {data.testimonials.map((t) => (
+              <Card key={t.id} className="bg-bg border-border/50">
+                <CardContent className="pt-6">
+                  <div className="flex text-amber-400 mb-4">
+                    {[...Array(t.rating)].map((_, i) => <span key={i}>★</span>)}
                   </div>
-                  <div>
-                    <h4 className="font-bold text-sm">ToxicPlayer99</h4>
-                    <p className="text-xs text-text-secondary">Verified Buyer</p>
+                  <p className="italic text-text-secondary mb-6">"{t.text}"</p>
+                  <div className="flex items-center">
+                    <div className={`w-10 h-10 rounded-full bg-${t.colorClass}/20 flex items-center justify-center text-${t.colorClass} font-bold mr-3`}>
+                      {t.initial}
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-sm">{t.author}</h4>
+                      <p className="text-xs text-text-secondary">Verified Buyer</p>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="bg-bg border-border/50">
-              <CardContent className="pt-6">
-                <div className="flex text-amber-400 mb-4">
-                  {[...Array(5)].map((_, i) => <span key={i}>★</span>)}
-                </div>
-                <p className="italic text-text-secondary mb-6">"Support team is amazing. Had an issue with my HWID and they reset it within 5 minutes on Discord. 10/10 service."</p>
-                <div className="flex items-center">
-                  <div className="w-10 h-10 rounded-full bg-neon-purple/20 flex items-center justify-center text-neon-purple font-bold mr-3">
-                    A
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-sm">AimGod_x</h4>
-                    <p className="text-xs text-text-secondary">Verified Buyer</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="bg-bg border-border/50">
-              <CardContent className="pt-6">
-                <div className="flex text-amber-400 mb-4">
-                  {[...Array(5)].map((_, i) => <span key={i}>★</span>)}
-                </div>
-                <p className="italic text-text-secondary mb-6">"The cleanest UI I've ever seen for a cheat like this. Easy to inject, no crashes, and works perfectly on Windows 11."</p>
-                <div className="flex items-center">
-                  <div className="w-10 h-10 rounded-full bg-neon-blue/20 flex items-center justify-center text-neon-blue font-bold mr-3">
-                    S
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-sm">SilentSniper</h4>
-                    <p className="text-xs text-text-secondary">Verified Buyer</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
     </div>
   )
 }
+

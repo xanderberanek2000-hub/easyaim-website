@@ -1,11 +1,47 @@
+import { useState } from "react"
 import { useParams, Link } from "react-router-dom"
 import { motion } from "framer-motion"
 import { Button } from "@/src/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card"
-import { Lock, CreditCard, ShieldCheck } from "lucide-react"
+import { Lock, CreditCard, ShieldCheck, ArrowRight } from "lucide-react"
+import { useSiteData } from "@/src/context/SiteContext"
 
 export function Checkout() {
   const { planId } = useParams()
+  const { data } = useSiteData()
+  const [showInstructions, setShowInstructions] = useState(false)
+
+  if (showInstructions) {
+    return (
+      <div className="container mx-auto px-4 max-w-2xl py-24">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4 }}
+        >
+          <Card className="border-neon-cyan/50 bg-surface shadow-[0_0_30px_rgba(0,240,255,0.1)]">
+            <CardHeader className="text-center pb-2">
+              <CardTitle className="text-3xl font-display font-bold neon-text-cyan mb-2">Payment Instructions</CardTitle>
+              <CardDescription className="text-lg">Please follow the steps below to complete your purchase.</CardDescription>
+            </CardHeader>
+            <CardContent className="pt-6 space-y-8">
+              <div className="bg-bg border border-border rounded-lg p-6 text-center whitespace-pre-wrap text-lg leading-relaxed">
+                {data.paymentInstructions}
+              </div>
+              
+              <div className="flex justify-center">
+                <Link to="/dashboard">
+                  <Button variant="neon" size="lg" className="w-full sm:w-auto">
+                    Go to Dashboard <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+    )
+  }
 
   return (
     <div className="container mx-auto px-4 max-w-4xl py-12">
@@ -106,9 +142,7 @@ export function Checkout() {
                   <span className="font-bold neon-text-cyan">{planId === 'lifetime' ? '$79.99' : '$14.99'}</span>
                 </div>
                 
-                <Link to="/dashboard">
-                  <Button variant="neon" className="w-full mt-6">Pay Now</Button>
-                </Link>
+                <Button variant="neon" className="w-full mt-6" onClick={() => setShowInstructions(true)}>Pay Now</Button>
                 
                 <p className="text-xs text-text-secondary text-center mt-4 flex items-center justify-center">
                   <ShieldCheck className="w-3 h-3 mr-1" /> Guaranteed Safe Checkout
