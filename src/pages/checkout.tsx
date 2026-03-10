@@ -130,7 +130,7 @@ export function Checkout() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex justify-between text-sm">
-                  <span className="text-text-secondary">EasyAim for Roblox</span>
+                  <span className="text-text-secondary">Itz Easy for Roblox</span>
                   <span className="font-medium">{planId === 'lifetime' ? '$79.99' : '$14.99'}</span>
                 </div>
                 <div className="flex justify-between text-sm">

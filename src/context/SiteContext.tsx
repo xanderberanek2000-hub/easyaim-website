@@ -9,6 +9,15 @@ export type Game = {
   productLink?: string;
 };
 
+export type Review = {
+  id: string;
+  userId: string;
+  userName: string;
+  rating: number;
+  comment: string;
+  date: string;
+};
+
 export type Product = {
   id: string;
   name: string;
@@ -18,6 +27,16 @@ export type Product = {
   features: string[];
   price: string;
   image: string;
+  developerId: string;
+  reviews: Review[];
+};
+
+export type Developer = {
+  id: string;
+  name: string;
+  bio: string;
+  avatar: string;
+  joinedDate: string;
 };
 
 export type Testimonial = {
@@ -46,6 +65,14 @@ export type StatusItem = {
   version: string;
 };
 
+export type FeatureCard = {
+  id: string;
+  icon: string; // We'll store the lucide icon name
+  title: string;
+  description: string;
+  colorClass: string;
+};
+
 export type SiteData = {
   siteName: string;
   heroTitle: string;
@@ -57,24 +84,57 @@ export type SiteData = {
   supportTicketLink: string;
   aboutUsTitle: string;
   aboutUsContent: string;
+  shopTitle: string;
+  shopSubtitle: string;
+  dashboardTitle: string;
+  dashboardSubtitle: string;
+  featureCards: FeatureCard[];
   games: Game[];
   products: Product[];
+  developers: Developer[];
   testimonials: Testimonial[];
   faqs: FAQ[];
   statuses: StatusItem[];
 };
 
 const defaultData: SiteData = {
-  siteName: "EasyAim",
-  heroTitle: "AI-Powered Aimbots & Triggerbots",
-  heroSubtitle: "Pure AI-driven cheating software. We offer advanced aimbots and triggerbots. Just pure, undetectable AI performance.",
+  siteName: "Itz Easy",
+  heroTitle: "AI-Powered Aimbot Cheats and Spoofers",
+  heroSubtitle: "Pure AI-driven cheating software. We offer advanced aimbots, triggerbots, and HWID spoofers. Just pure, undetectable AI performance.",
   paymentInstructions: "Please send the exact amount in Crypto to the address below, then open a ticket in our Discord with your transaction ID to receive your license key.",
   discordLink: "https://discord.gg/example",
   twitterLink: "https://twitter.com/example",
   facebookLink: "https://facebook.com/example",
   supportTicketLink: "https://example.com/support",
-  aboutUsTitle: "About EasyAim",
+  aboutUsTitle: "About Itz Easy",
   aboutUsContent: "We are a dedicated team of AI researchers and developers focused on pushing the boundaries of computer vision. Our mission is to provide the most advanced, secure, and undetectable AI-assisted tools for gamers worldwide. We believe in pure performance without compromising your account's safety.",
+  shopTitle: "Store",
+  shopSubtitle: "Browse our selection of premium gaming cheats.",
+  dashboardTitle: "User Dashboard",
+  dashboardSubtitle: "Manage your licenses, downloads, and account settings.",
+  featureCards: [
+    {
+      id: "feat-1",
+      icon: "Crosshair",
+      title: "Precision Aiming",
+      description: "Advanced AI algorithms for pixel-perfect accuracy.",
+      colorClass: "neon-cyan"
+    },
+    {
+      id: "feat-2",
+      icon: "Shield",
+      title: "Undetected",
+      description: "Built with security in mind to keep your accounts safe.",
+      colorClass: "neon-purple"
+    },
+    {
+      id: "feat-3",
+      icon: "Zap",
+      title: "Instant Delivery",
+      description: "Get your license key immediately after purchase.",
+      colorClass: "neon-blue"
+    }
+  ],
   games: [
     {
       id: "roblox",
@@ -102,23 +162,59 @@ const defaultData: SiteData = {
   products: [
     {
       id: "roblox-aim",
-      name: "EasyAim for Roblox",
+      name: "Itz Easy for Roblox",
       game: "Roblox",
       cheatType: "Full Suite",
       description: "Advanced AI aimbot and triggerbot for Roblox.",
       features: ["AI Aimbot (Customizable FOV & Smoothness)", "Color-based Triggerbot", "Humanized Recoil Control", "Stream Proof (OBS Bypass)", "Auto-Update System", "Undetected Injection"],
       price: "From $4.99",
-      image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=800&auto=format&fit=crop"
+      image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=800&auto=format&fit=crop",
+      developerId: "dev-1",
+      reviews: [
+        { id: "r1", userId: "u1", userName: "ToxicPlayer99", rating: 5, comment: "Best aimbot out there.", date: "2023-10-01" }
+      ]
     },
     {
       id: "roblox-lite",
-      name: "EasyAim Lite",
+      name: "Itz Easy Lite",
       game: "Roblox",
       cheatType: "Triggerbot",
       description: "Lightweight triggerbot for instant reactions. Pure pixel-scanning.",
       features: ["Color Triggerbot", "Flick Bot", "Humanized Smoothing", "Low Resource Usage"],
       price: "From $2.99",
-      image: "https://images.unsplash.com/photo-1555680202-c86f0e12f086?q=80&w=800&auto=format&fit=crop"
+      image: "https://images.unsplash.com/photo-1555680202-c86f0e12f086?q=80&w=800&auto=format&fit=crop",
+      developerId: "dev-1",
+      reviews: []
+    },
+    {
+      id: "hwid-spoofer",
+      name: "Itz Easy Spoofer",
+      game: "All Games",
+      cheatType: "Spoofer",
+      description: "Undetectable HWID spoofer to bypass hardware bans. Works for all major anti-cheats.",
+      features: ["Kernel Level", "One-Click Spoof", "No Format Required", "EAC/BE Support"],
+      price: "From $19.99",
+      image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=800&auto=format&fit=crop",
+      developerId: "dev-2",
+      reviews: [
+        { id: "r2", userId: "u2", userName: "AimGod_x", rating: 5, comment: "Saved my account.", date: "2023-10-05" }
+      ]
+    }
+  ],
+  developers: [
+    {
+      id: "dev-1",
+      name: "Itz Easy Dev Team",
+      bio: "Creators of the best AI-powered aimbots.",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=ItzEasy",
+      joinedDate: "2023-01-01"
+    },
+    {
+      id: "dev-2",
+      name: "SpoofMaster",
+      bio: "Specializing in kernel-level HWID spoofers.",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=SpoofMaster",
+      joinedDate: "2023-05-15"
     }
   ],
   testimonials: [
@@ -177,7 +273,7 @@ const defaultData: SiteData = {
     {
       id: "s1",
       game: "Roblox",
-      tool: "EasyAim for Roblox",
+      tool: "Itz Easy for Roblox",
       status: "online",
       lastUpdated: "2 hours ago",
       updatedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toLocaleString(),
@@ -186,7 +282,7 @@ const defaultData: SiteData = {
     {
       id: "s2",
       game: "Roblox",
-      tool: "EasyAim Lite",
+      tool: "Itz Easy Lite",
       status: "online",
       lastUpdated: "1 day ago",
       updatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toLocaleString(),
@@ -195,7 +291,7 @@ const defaultData: SiteData = {
     {
       id: "s3",
       game: "CS",
-      tool: "EasyAim for CS",
+      tool: "Itz Easy for CS",
       status: "maintenance",
       lastUpdated: "3 days ago",
       updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toLocaleString(),
@@ -204,7 +300,7 @@ const defaultData: SiteData = {
     {
       id: "s4",
       game: "Rust",
-      tool: "EasyAim for Rust",
+      tool: "Itz Easy for Rust",
       status: "updating",
       lastUpdated: "Just now",
       updatedAt: new Date().toLocaleString(),

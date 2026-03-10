@@ -3,8 +3,8 @@ import { useParams, Link } from "react-router-dom"
 import { motion } from "framer-motion"
 import { Button } from "@/src/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card"
-import { CheckCircle2, Monitor, Download, ShieldCheck } from "lucide-react"
-import { useSiteData } from "@/src/context/SiteContext"
+import { CheckCircle2, Monitor, Download, ShieldCheck, Star, MessageSquare } from "lucide-react"
+import { useSiteData, Review } from "@/src/context/SiteContext"
 
 const pricingPlans = [
   { id: "3-day", name: "3-Day Access", price: "$4.99", duration: "3 Days" },
@@ -16,10 +16,14 @@ const pricingPlans = [
 
 export function Product() {
   const { id } = useParams()
-  const { data } = useSiteData()
+  const { data, updateData } = useSiteData()
   const [isLoading, setIsLoading] = useState(true)
+  const [newReviewRating, setNewReviewRating] = useState(5)
+  const [newReviewComment, setNewReviewComment] = useState("")
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false)
   
   const product = data.products.find(p => p.id === id) || data.products[0]
+  const developer = data.developers.find(d => d.id === product.developerId)
 
   useEffect(() => {
     setIsLoading(true)
@@ -28,6 +32,35 @@ export function Product() {
     }, 600)
     return () => clearTimeout(timer)
   }, [id])
+
+  const handleSubmitReview = () => {
+    if (!newReviewComment.trim()) return
+    
+    setIsSubmittingReview(true)
+    
+    setTimeout(() => {
+      const newReview: Review = {
+        id: `rev-${Date.now()}`,
+        userId: "current-user",
+        userName: "You",
+        rating: newReviewRating,
+        comment: newReviewComment,
+        date: new Date().toISOString().split('T')[0]
+      }
+      
+      const updatedProducts = data.products.map(p => {
+        if (p.id === product.id) {
+          return { ...p, reviews: [newReview, ...(p.reviews || [])] }
+        }
+        return p
+      })
+      
+      updateData({ products: updatedProducts })
+      setNewReviewComment("")
+      setNewReviewRating(5)
+      setIsSubmittingReview(false)
+    }, 500)
+  }
 
   if (isLoading) {
     return (
@@ -70,7 +103,14 @@ export function Product() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="text-4xl font-display font-bold mb-2 neon-text-cyan">{product.name}</h1>
+            <div className="flex justify-between items-start mb-2">
+              <h1 className="text-4xl font-display font-bold neon-text-cyan">{product.name}</h1>
+            </div>
+            {developer && (
+              <Link to={`/developer/${developer.id}`} className="text-sm text-neon-cyan hover:underline mb-6 block">
+                Developed by {developer.name}
+              </Link>
+            )}
             <p className="text-text-secondary text-lg mb-6">{product.description}</p>
             
             <div className="rounded-xl overflow-hidden border border-border mb-8">
@@ -109,6 +149,75 @@ export function Product() {
                   <li>Download the loader and run as Administrator.</li>
                   <li>Enter your license key and inject into the game.</li>
                 </ol>
+              </section>
+
+              <section className="mt-12 pt-8 border-t border-border/50">
+                <h3 className="text-2xl font-bold mb-6 flex items-center"><MessageSquare className="mr-2 text-neon-purple" /> User Reviews</h3>
+                
+                {/* Add Review Form */}
+                <Card className="bg-surface border-border/50 mb-8">
+                  <CardHeader>
+                    <CardTitle className="text-lg">Write a Review</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <label className="text-sm font-medium text-text-secondary block mb-2">Rating</label>
+                      <div className="flex gap-1">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <button
+                            key={star}
+                            onClick={() => setNewReviewRating(star)}
+                            className={`p-1 ${star <= newReviewRating ? "text-yellow-400" : "text-text-secondary/30"}`}
+                          >
+                            <Star className="w-6 h-6 fill-current" />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-text-secondary block mb-2">Your Review</label>
+                      <textarea
+                        value={newReviewComment}
+                        onChange={(e) => setNewReviewComment(e.target.value)}
+                        placeholder="Share your experience with this product..."
+                        className="w-full bg-bg border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:border-neon-cyan h-24"
+                      />
+                    </div>
+                    <Button 
+                      onClick={handleSubmitReview} 
+                      disabled={!newReviewComment.trim() || isSubmittingReview}
+                      className="bg-neon-cyan hover:bg-neon-cyan/90 text-black font-bold"
+                    >
+                      {isSubmittingReview ? "Submitting..." : "Submit Review"}
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                {/* Reviews List */}
+                <div className="space-y-4">
+                  {product.reviews && product.reviews.length > 0 ? (
+                    product.reviews.map((review) => (
+                      <Card key={review.id} className="bg-surface border-border/50">
+                        <CardContent className="pt-6">
+                          <div className="flex justify-between items-start mb-2">
+                            <div>
+                              <p className="font-bold text-white">{review.userName}</p>
+                              <div className="flex text-yellow-400 mt-1">
+                                {[...Array(5)].map((_, i) => (
+                                  <Star key={i} className={`w-3 h-3 ${i < review.rating ? "fill-current" : "text-text-secondary/30"}`} />
+                                ))}
+                              </div>
+                            </div>
+                            <span className="text-xs text-text-secondary">{review.date}</span>
+                          </div>
+                          <p className="text-text-secondary mt-3">{review.comment}</p>
+                        </CardContent>
+                      </Card>
+                    ))
+                  ) : (
+                    <p className="text-text-secondary italic">No reviews yet. Be the first to review this product!</p>
+                  )}
+                </div>
               </section>
             </div>
           </motion.div>

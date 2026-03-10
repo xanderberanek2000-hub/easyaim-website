@@ -15,6 +15,7 @@ export function Shop() {
   const [searchQuery, setSearchQuery] = useState(query)
   const [selectedGame, setSelectedGame] = useState("All")
   const [selectedType, setSelectedType] = useState("All")
+  const [selectedDeveloper, setSelectedDeveloper] = useState("All")
 
   useEffect(() => {
     setSearchQuery(query)
@@ -26,32 +27,37 @@ export function Shop() {
       setIsLoading(false)
     }, 600)
     return () => clearTimeout(timer)
-  }, [searchQuery, selectedGame, selectedType])
+  }, [searchQuery, selectedGame, selectedType, selectedDeveloper])
 
   const uniqueGames = ["All", ...Array.from(new Set(data.products.map(p => p.game)))]
   const uniqueTypes = ["All", ...Array.from(new Set(data.products.map(p => p.cheatType)))]
+  const uniqueDevelopers = ["All", ...data.developers.map(d => d.id)]
 
   const filteredProducts = data.products.filter(product => {
+    const developer = data.developers.find(d => d.id === product.developerId)
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          product.description.toLowerCase().includes(searchQuery.toLowerCase())
+                          product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          (developer && developer.name.toLowerCase().includes(searchQuery.toLowerCase()))
     const matchesGame = selectedGame === "All" || product.game === selectedGame
     const matchesType = selectedType === "All" || product.cheatType === selectedType
+    const matchesDeveloper = selectedDeveloper === "All" || product.developerId === selectedDeveloper
     
-    return matchesSearch && matchesGame && matchesType
+    return matchesSearch && matchesGame && matchesType && matchesDeveloper
   })
 
   const clearFilters = () => {
     setSearchQuery("")
     setSelectedGame("All")
     setSelectedType("All")
+    setSelectedDeveloper("All")
     setSearchParams({})
   }
 
   return (
     <div className="container mx-auto px-4 max-w-7xl py-12">
       <div className="mb-12">
-        <h1 className="text-4xl font-display font-bold mb-4 neon-text-cyan">Store</h1>
-        <p className="text-text-secondary text-lg">Browse our selection of premium gaming cheats.</p>
+        <h1 className="text-4xl font-display font-bold mb-4 neon-text-cyan">{data.shopTitle || "Store"}</h1>
+        <p className="text-text-secondary text-lg">{data.shopSubtitle || "Browse our selection of premium gaming cheats."}</p>
       </div>
 
       <div className="flex flex-col md:flex-row gap-6 mb-10">
@@ -87,7 +93,20 @@ export function Shop() {
             ))}
           </select>
 
-          {(searchQuery || selectedGame !== "All" || selectedType !== "All") && (
+          <select 
+            value={selectedDeveloper}
+            onChange={(e) => setSelectedDeveloper(e.target.value)}
+            className="bg-surface border border-border rounded-lg px-4 py-2.5 focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-all"
+          >
+            {uniqueDevelopers.map((devId, index) => {
+              const dev = data.developers.find(d => d.id === devId)
+              return (
+                <option key={devId || index} value={devId}>{devId === "All" ? "All Developers" : dev?.name || devId}</option>
+              )
+            })}
+          </select>
+
+          {(searchQuery || selectedGame !== "All" || selectedType !== "All" || selectedDeveloper !== "All") && (
             <Button variant="ghost" onClick={clearFilters} className="text-text-secondary hover:text-white">
               <FilterX className="w-4 h-4 mr-2" /> Clear Filters
             </Button>
@@ -119,7 +138,9 @@ export function Shop() {
         </div>
       ) : filteredProducts.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProducts.map((product, index) => (
+          {filteredProducts.map((product, index) => {
+            const developer = data.developers.find(d => d.id === product.developerId)
+            return (
             <motion.div
               key={product.id}
               initial={{ opacity: 0, y: 20 }}
@@ -135,7 +156,14 @@ export function Shop() {
                 />
                 <CardHeader>
                   <div className="flex justify-between items-start mb-2">
-                    <CardTitle className="text-xl">{product.name}</CardTitle>
+                    <div>
+                      <CardTitle className="text-xl">{product.name}</CardTitle>
+                      {developer && (
+                        <Link to={`/developer/${developer.id}`} className="text-sm text-neon-cyan hover:underline mt-1 block">
+                          by {developer.name}
+                        </Link>
+                      )}
+                    </div>
                     <div className="flex flex-col gap-1 items-end">
                       <span className="text-xs font-bold bg-surface-hover px-2 py-1 rounded text-text-secondary">
                         {product.game}
@@ -165,7 +193,7 @@ export function Shop() {
                 </CardFooter>
               </Card>
             </motion.div>
-          ))}
+          )})}
         </div>
       ) : (
         <div className="text-center py-20">

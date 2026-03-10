@@ -1,11 +1,13 @@
 import React, { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { Button } from "@/src/components/ui/button"
-import { Crosshair, Search } from "lucide-react"
+import { Crosshair, Search, LogIn, LogOut, User } from "lucide-react"
 import { useSiteData } from "@/src/context/SiteContext"
+import { useAuth } from "@/src/context/AuthContext"
 
 export function Navbar() {
   const { data } = useSiteData()
+  const { user, profile, signInWithGoogle, logout } = useAuth()
   const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState("")
 
@@ -25,7 +27,7 @@ export function Navbar() {
           <span className="font-display font-bold text-xl tracking-tight neon-text-cyan hidden sm:inline-block">{data.siteName}</span>
         </Link>
         <div className="hidden md:flex items-center gap-6 text-sm font-medium text-text-secondary flex-1 justify-center px-8">
-          <Link to="/shop" className="hover:text-neon-cyan transition-colors">Shop</Link>
+          <Link to="/shop" className="hover:text-neon-cyan transition-colors">Marketplace</Link>
           <Link to="/status" className="hover:text-neon-cyan transition-colors">Status</Link>
           <Link to="/support" className="hover:text-neon-cyan transition-colors">Support</Link>
           <Link to="/about" className="hover:text-neon-cyan transition-colors">About Us</Link>
@@ -34,7 +36,7 @@ export function Navbar() {
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-text-secondary" />
             <input
               type="text"
-              placeholder="Search cheats..."
+              placeholder="Search products..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-surface border border-border rounded-full pl-9 pr-4 py-1.5 text-sm focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan transition-all"
@@ -54,12 +56,26 @@ export function Navbar() {
               />
             </form>
           </div>
-          <Link to="/dashboard" className="hidden sm:inline-block">
-            <Button variant="outline" size="sm">Dashboard</Button>
-          </Link>
-          <Link to="/shop">
-            <Button variant="neon" size="sm">Get Started</Button>
-          </Link>
+          
+          {user ? (
+            <>
+              {profile?.role === 'developer' && (
+                <Link to="/developer-dashboard" className="hidden sm:inline-block">
+                  <Button variant="outline" size="sm" className="border-neon-purple text-neon-purple hover:bg-neon-purple hover:text-white">Dev Dashboard</Button>
+                </Link>
+              )}
+              <Link to="/dashboard" className="hidden sm:inline-block">
+                <Button variant="outline" size="sm" className="border-neon-cyan text-neon-cyan hover:bg-neon-cyan hover:text-bg">My Software</Button>
+              </Link>
+              <Button variant="ghost" size="sm" onClick={logout} className="text-text-secondary hover:text-white" title="Logout">
+                <LogOut className="w-4 h-4" />
+              </Button>
+            </>
+          ) : (
+            <Button variant="neon" size="sm" onClick={signInWithGoogle} className="flex items-center gap-2">
+              <LogIn className="w-4 h-4" /> Sign In
+            </Button>
+          )}
         </div>
       </div>
     </nav>

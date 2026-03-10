@@ -2,8 +2,8 @@ import { useState } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/src/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card"
-import { Settings, Users, Activity, Shield, Plus, Trash2, Save, MessageSquare, HelpCircle, Server, Gamepad2 } from "lucide-react"
-import { useSiteData, Game, Product, Testimonial, FAQ, StatusItem } from "@/src/context/SiteContext"
+import { Settings, Users, Activity, Shield, Plus, Trash2, Save, MessageSquare, HelpCircle, Server, Gamepad2, LayoutTemplate } from "lucide-react"
+import { useSiteData, Game, Product, Testimonial, FAQ, StatusItem, FeatureCard } from "@/src/context/SiteContext"
 
 export function Admin() {
   const { data, updateData } = useSiteData()
@@ -21,7 +21,12 @@ export function Admin() {
   const [supportTicketLink, setSupportTicketLink] = useState(data.supportTicketLink)
   const [aboutUsTitle, setAboutUsTitle] = useState(data.aboutUsTitle)
   const [aboutUsContent, setAboutUsContent] = useState(data.aboutUsContent)
+  const [shopTitle, setShopTitle] = useState(data.shopTitle || "Store")
+  const [shopSubtitle, setShopSubtitle] = useState(data.shopSubtitle || "Browse our selection of premium gaming cheats.")
+  const [dashboardTitle, setDashboardTitle] = useState(data.dashboardTitle || "User Dashboard")
+  const [dashboardSubtitle, setDashboardSubtitle] = useState(data.dashboardSubtitle || "Manage your licenses, downloads, and account settings.")
   
+  const [featureCards, setFeatureCards] = useState<FeatureCard[]>(data.featureCards || [])
   const [games, setGames] = useState<Game[]>(data.games)
   const [products, setProducts] = useState<Product[]>(data.products)
   const [testimonials, setTestimonials] = useState<Testimonial[]>(data.testimonials)
@@ -35,8 +40,18 @@ export function Admin() {
   }
 
   const handleSaveGeneral = () => {
-    updateData({ siteName, heroTitle, heroSubtitle, paymentInstructions, discordLink, twitterLink, facebookLink, supportTicketLink, aboutUsTitle, aboutUsContent })
+    updateData({ 
+      siteName, heroTitle, heroSubtitle, paymentInstructions, 
+      discordLink, twitterLink, facebookLink, supportTicketLink, 
+      aboutUsTitle, aboutUsContent, shopTitle, shopSubtitle, 
+      dashboardTitle, dashboardSubtitle 
+    })
     showMessage("General settings saved!")
+  }
+
+  const handleSaveFeatureCards = () => {
+    updateData({ featureCards })
+    showMessage("Feature cards saved!")
   }
 
   const handleSaveGames = () => {
@@ -62,6 +77,25 @@ export function Admin() {
   const handleSaveStatuses = () => {
     updateData({ statuses })
     showMessage("Statuses saved!")
+  }
+
+  const addFeatureCard = () => {
+    const newCard: FeatureCard = {
+      id: `feat-${Date.now()}`,
+      icon: "Crosshair",
+      title: "New Feature",
+      description: "Description here",
+      colorClass: "neon-cyan"
+    }
+    setFeatureCards([...featureCards, newCard])
+  }
+
+  const updateFeatureCard = (id: string, field: keyof FeatureCard, value: string) => {
+    setFeatureCards(featureCards.map(f => f.id === id ? { ...f, [field]: value } : f))
+  }
+
+  const removeFeatureCard = (id: string) => {
+    setFeatureCards(featureCards.filter(f => f.id !== id))
   }
 
   const addGame = () => {
@@ -92,7 +126,9 @@ export function Admin() {
       description: "Description here",
       features: ["Feature 1", "Feature 2"],
       price: "From $9.99",
-      image: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=800&auto=format&fit=crop"
+      image: "https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=800&auto=format&fit=crop",
+      developerId: "dev-1",
+      reviews: []
     }
     setProducts([...products, newProduct])
   }
@@ -249,6 +285,13 @@ export function Admin() {
               <Settings className="w-4 h-4 mr-2" /> General Settings
             </Button>
             <Button 
+              variant={activeTab === "features" ? "neon" : "ghost"} 
+              className={`w-full justify-start ${activeTab === "features" ? "bg-neon-purple hover:bg-neon-purple/90 neon-bg-purple" : ""}`}
+              onClick={() => setActiveTab("features")}
+            >
+              <LayoutTemplate className="w-4 h-4 mr-2" /> Feature Cards
+            </Button>
+            <Button 
               variant={activeTab === "games" ? "neon" : "ghost"} 
               className={`w-full justify-start ${activeTab === "games" ? "bg-neon-purple hover:bg-neon-purple/90 neon-bg-purple" : ""}`}
               onClick={() => setActiveTab("games")}
@@ -381,11 +424,117 @@ export function Admin() {
                       className="w-full bg-bg border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:border-neon-purple h-32" 
                     />
                   </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-text-secondary">Shop Title</label>
+                    <input 
+                      type="text" 
+                      value={shopTitle}
+                      onChange={(e) => setShopTitle(e.target.value)}
+                      className="w-full bg-bg border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:border-neon-purple" 
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-text-secondary">Shop Subtitle</label>
+                    <input 
+                      type="text" 
+                      value={shopSubtitle}
+                      onChange={(e) => setShopSubtitle(e.target.value)}
+                      className="w-full bg-bg border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:border-neon-purple" 
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-text-secondary">Dashboard Title</label>
+                    <input 
+                      type="text" 
+                      value={dashboardTitle}
+                      onChange={(e) => setDashboardTitle(e.target.value)}
+                      className="w-full bg-bg border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:border-neon-purple" 
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-text-secondary">Dashboard Subtitle</label>
+                    <input 
+                      type="text" 
+                      value={dashboardSubtitle}
+                      onChange={(e) => setDashboardSubtitle(e.target.value)}
+                      className="w-full bg-bg border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:border-neon-purple" 
+                    />
+                  </div>
                   <Button onClick={handleSaveGeneral} className="bg-neon-purple hover:bg-neon-purple/90 text-white w-full mt-4">
                     <Save className="w-4 h-4 mr-2" /> Save Settings
                   </Button>
                 </CardContent>
               </Card>
+            )}
+
+            {activeTab === "features" && (
+              <div className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-2xl font-bold">Manage Feature Cards</h2>
+                  <Button onClick={addFeatureCard} variant="outline" className="border-neon-purple text-neon-purple hover:bg-neon-purple hover:text-white">
+                    <Plus className="w-4 h-4 mr-2" /> Add Feature Card
+                  </Button>
+                </div>
+                
+                {featureCards.map((card) => (
+                  <Card key={card.id} className="bg-surface border-border/50">
+                    <CardContent className="pt-6 space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium text-text-secondary">Title</label>
+                          <input 
+                            type="text" 
+                            value={card.title}
+                            onChange={(e) => updateFeatureCard(card.id, "title", e.target.value)}
+                            className="w-full bg-bg border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:border-neon-purple"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium text-text-secondary">Icon (Lucide name)</label>
+                          <input 
+                            type="text" 
+                            value={card.icon}
+                            onChange={(e) => updateFeatureCard(card.id, "icon", e.target.value)}
+                            className="w-full bg-bg border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:border-neon-purple"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium text-text-secondary">Color Class</label>
+                          <select 
+                            value={card.colorClass}
+                            onChange={(e) => updateFeatureCard(card.id, "colorClass", e.target.value)}
+                            className="w-full bg-bg border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:border-neon-purple"
+                          >
+                            <option value="neon-cyan">Cyan</option>
+                            <option value="neon-purple">Purple</option>
+                            <option value="neon-blue">Blue</option>
+                            <option value="neon-green">Green</option>
+                            <option value="neon-rose">Rose</option>
+                          </select>
+                        </div>
+                        <div className="space-y-2 md:col-span-2">
+                          <label className="text-sm font-medium text-text-secondary">Description</label>
+                          <input 
+                            type="text" 
+                            value={card.description}
+                            onChange={(e) => updateFeatureCard(card.id, "description", e.target.value)}
+                            className="w-full bg-bg border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:border-neon-purple"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex justify-end mt-4">
+                        <Button onClick={() => removeFeatureCard(card.id)} variant="ghost" className="text-rose-500 hover:text-rose-400 hover:bg-rose-500/10 h-8 px-2">
+                          <Trash2 className="w-4 h-4 mr-2" /> Remove
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+                
+                <Button onClick={handleSaveFeatureCards} className="bg-neon-purple hover:bg-neon-purple/90 text-white w-full">
+                  <Save className="w-4 h-4 mr-2" /> Save Feature Cards
+                </Button>
+              </div>
             )}
 
             {activeTab === "games" && (

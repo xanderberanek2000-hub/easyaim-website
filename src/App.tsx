@@ -13,6 +13,8 @@ import { Shop } from "./pages/shop"
 import { Product } from "./pages/product"
 import { Checkout } from "./pages/checkout"
 import { Dashboard } from "./pages/dashboard"
+import { DeveloperDashboard } from "./pages/developer-dashboard"
+import { DeveloperProfile } from "./pages/developer-profile"
 import { Support } from "./pages/support"
 import { Status } from "./pages/status"
 import { Admin } from "./pages/admin"
@@ -32,6 +34,8 @@ export default function App() {
               <Route path="/product/:id" element={<Product />} />
               <Route path="/checkout/:planId" element={<Checkout />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/developer-dashboard" element={<DeveloperDashboard />} />
+              <Route path="/developer/:id" element={<DeveloperProfile />} />
               <Route path="/support" element={<Support />} />
               <Route path="/status" element={<Status />} />
               <Route path="/about" element={<About />} />

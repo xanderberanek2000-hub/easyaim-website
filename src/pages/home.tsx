@@ -2,7 +2,7 @@ import { Link } from "react-router-dom"
 import { motion } from "framer-motion"
 import { Button } from "@/src/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card"
-import { Crosshair, Shield, Zap, CheckCircle2, Clock } from "lucide-react"
+import * as Icons from "lucide-react"
 import { useSiteData } from "@/src/context/SiteContext"
 
 export function Home() {
@@ -54,27 +54,18 @@ export function Home() {
       <section className="py-20 bg-surface/50">
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="bg-bg border-border/50">
-              <CardHeader>
-                <Crosshair className="h-10 w-10 text-neon-cyan mb-4" />
-                <CardTitle>Precision Aiming</CardTitle>
-                <CardDescription>Advanced AI algorithms for pixel-perfect accuracy.</CardDescription>
-              </CardHeader>
-            </Card>
-            <Card className="bg-bg border-border/50">
-              <CardHeader>
-                <Shield className="h-10 w-10 text-neon-purple mb-4" />
-                <CardTitle>Undetected</CardTitle>
-                <CardDescription>Built with security in mind to keep your accounts safe.</CardDescription>
-              </CardHeader>
-            </Card>
-            <Card className="bg-bg border-border/50">
-              <CardHeader>
-                <Zap className="h-10 w-10 text-neon-blue mb-4" />
-                <CardTitle>Instant Delivery</CardTitle>
-                <CardDescription>Get your license key immediately after purchase.</CardDescription>
-              </CardHeader>
-            </Card>
+            {data.featureCards?.map((feature) => {
+              const IconComponent = (Icons as any)[feature.icon] || Icons.HelpCircle;
+              return (
+                <Card key={feature.id} className="bg-bg border-border/50">
+                  <CardHeader>
+                    <IconComponent className={`h-10 w-10 text-${feature.colorClass} mb-4`} />
+                    <CardTitle>{feature.title}</CardTitle>
+                    <CardDescription>{feature.description}</CardDescription>
+                  </CardHeader>
+                </Card>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -101,7 +92,7 @@ export function Home() {
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="text-2xl font-bold">{game.name}</h3>
                     <span className={`flex items-center text-xs font-bold px-2 py-1 rounded-full ${game.status === 'Supported' ? 'text-emerald-400 bg-emerald-400/10' : 'text-amber-400 bg-amber-400/10'}`}>
-                      {game.status === 'Supported' ? <CheckCircle2 className="w-3 h-3 mr-1" /> : <Clock className="w-3 h-3 mr-1" />} 
+                      {game.status === 'Supported' ? <Icons.CheckCircle2 className="w-3 h-3 mr-1" /> : <Icons.Clock className="w-3 h-3 mr-1" />} 
                       {game.status}
                     </span>
                   </div>
