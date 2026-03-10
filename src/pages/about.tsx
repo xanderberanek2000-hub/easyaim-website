@@ -26,7 +26,7 @@ export function About() {
               <Crosshair className="w-6 h-6 text-neon-cyan" />
             </div>
             <h3 className="text-xl font-bold mb-2">Precision</h3>
-            <p className="text-text-secondary text-sm">Engineered for pixel-perfect accuracy using advanced AI models.</p>
+            <p className="text-text-secondary text-sm">Engineered for pixel-perfect accuracy using advanced models.</p>
           </div>
           
           <div className="text-center p-6 bg-surface rounded-xl border border-border/50 hover:border-neon-purple/30 transition-colors">

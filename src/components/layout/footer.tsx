@@ -15,7 +15,7 @@ export function Footer() {
               <span className="font-display font-bold text-xl tracking-tight neon-text-cyan">{data.siteName}</span>
             </Link>
             <p className="text-sm text-text-secondary">
-              Premium AI-powered aimbots and triggerbots.
+              Premium aimbots and triggerbots.
             </p>
             <div className="flex items-center gap-4 pt-2">
               <a href={data.twitterLink} target="_blank" rel="noopener noreferrer" className="text-text-secondary hover:text-neon-cyan transition-colors">

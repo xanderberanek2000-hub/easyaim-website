@@ -99,15 +99,15 @@ export type SiteData = {
 
 const defaultData: SiteData = {
   siteName: "Itz Easy",
-  heroTitle: "AI-Powered Aimbot Cheats and Spoofers",
-  heroSubtitle: "Pure AI-driven cheating software. We offer advanced aimbots, triggerbots, and HWID spoofers. Just pure, undetectable AI performance.",
+  heroTitle: "Premium Aimbot Cheats and Spoofers",
+  heroSubtitle: "High-performance cheating software. We offer advanced aimbots, triggerbots, and HWID spoofers. Just pure, undetectable performance.",
   paymentInstructions: "Please send the exact amount in Crypto to the address below, then open a ticket in our Discord with your transaction ID to receive your license key.",
   discordLink: "https://discord.gg/example",
   twitterLink: "https://twitter.com/example",
   facebookLink: "https://facebook.com/example",
   supportTicketLink: "https://example.com/support",
   aboutUsTitle: "About Itz Easy",
-  aboutUsContent: "We are a dedicated team of AI researchers and developers focused on pushing the boundaries of computer vision. Our mission is to provide the most advanced, secure, and undetectable AI-assisted tools for gamers worldwide. We believe in pure performance without compromising your account's safety.",
+  aboutUsContent: "We are a dedicated team of developers focused on pushing the boundaries of computer vision. Our mission is to provide the most advanced, secure, and undetectable tools for gamers worldwide. We believe in pure performance without compromising your account's safety.",
   shopTitle: "Store",
   shopSubtitle: "Browse our selection of premium gaming cheats.",
   dashboardTitle: "User Dashboard",
@@ -117,7 +117,7 @@ const defaultData: SiteData = {
       id: "feat-1",
       icon: "Crosshair",
       title: "Precision Aiming",
-      description: "Advanced AI algorithms for pixel-perfect accuracy.",
+      description: "Advanced algorithms for pixel-perfect accuracy.",
       colorClass: "neon-cyan"
     },
     {
@@ -140,7 +140,7 @@ const defaultData: SiteData = {
       id: "roblox",
       name: "Roblox",
       status: "Supported",
-      description: "Full suite of AI aimbot and triggerbot features available.",
+      description: "Full suite of aimbot and triggerbot features available.",
       imageUrl: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=800&auto=format&fit=crop",
       productLink: "/product/roblox-aim"
     },
@@ -148,14 +148,14 @@ const defaultData: SiteData = {
       id: "cs",
       name: "CS",
       status: "Coming Soon",
-      description: "In development. Pure AI vision-based aimbot. Expected release next month.",
+      description: "In development. Pure vision-based aimbot. Expected release next month.",
       imageUrl: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=800&auto=format&fit=crop"
     },
     {
       id: "rust",
       name: "Rust",
       status: "Coming Soon",
-      description: "Currently in private beta testing phase. AI recoil control and triggerbot.",
+      description: "Currently in private beta testing phase. Recoil control and triggerbot.",
       imageUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=800&auto=format&fit=crop"
     }
   ],
@@ -165,8 +165,8 @@ const defaultData: SiteData = {
       name: "Itz Easy for Roblox",
       game: "Roblox",
       cheatType: "Full Suite",
-      description: "Advanced AI aimbot and triggerbot for Roblox.",
-      features: ["AI Aimbot (Customizable FOV & Smoothness)", "Color-based Triggerbot", "Humanized Recoil Control", "Stream Proof (OBS Bypass)", "Auto-Update System", "Undetected Injection"],
+      description: "Advanced aimbot and triggerbot for Roblox.",
+      features: ["Aimbot (Customizable FOV & Smoothness)", "Color-based Triggerbot", "Humanized Recoil Control", "Stream Proof (OBS Bypass)", "Auto-Update System", "Undetected Injection"],
       price: "From $4.99",
       image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=800&auto=format&fit=crop",
       developerId: "dev-1",
@@ -205,7 +205,7 @@ const defaultData: SiteData = {
     {
       id: "dev-1",
       name: "Itz Easy Dev Team",
-      bio: "Creators of the best AI-powered aimbots.",
+      bio: "Creators of the best premium aimbots.",
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=ItzEasy",
       joinedDate: "2023-01-01"
     },

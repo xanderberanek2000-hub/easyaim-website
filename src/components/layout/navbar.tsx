@@ -1,13 +1,11 @@
 import React, { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { Button } from "@/src/components/ui/button"
-import { Crosshair, Search, LogIn, LogOut, User } from "lucide-react"
+import { Crosshair, Search } from "lucide-react"
 import { useSiteData } from "@/src/context/SiteContext"
-import { useAuth } from "@/src/context/AuthContext"
 
 export function Navbar() {
   const { data } = useSiteData()
-  const { user, profile, signInWithGoogle, logout } = useAuth()
   const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState("")
 
@@ -57,25 +55,12 @@ export function Navbar() {
             </form>
           </div>
           
-          {user ? (
-            <>
-              {profile?.role === 'developer' && (
-                <Link to="/developer-dashboard" className="hidden sm:inline-block">
-                  <Button variant="outline" size="sm" className="border-neon-purple text-neon-purple hover:bg-neon-purple hover:text-white">Dev Dashboard</Button>
-                </Link>
-              )}
-              <Link to="/dashboard" className="hidden sm:inline-block">
-                <Button variant="outline" size="sm" className="border-neon-cyan text-neon-cyan hover:bg-neon-cyan hover:text-bg">My Software</Button>
-              </Link>
-              <Button variant="ghost" size="sm" onClick={logout} className="text-text-secondary hover:text-white" title="Logout">
-                <LogOut className="w-4 h-4" />
-              </Button>
-            </>
-          ) : (
-            <Button variant="neon" size="sm" onClick={signInWithGoogle} className="flex items-center gap-2">
-              <LogIn className="w-4 h-4" /> Sign In
-            </Button>
-          )}
+          <Link to="/dashboard" className="hidden sm:inline-block">
+            <Button variant="outline" size="sm" className="border-neon-cyan text-neon-cyan hover:bg-neon-cyan hover:text-bg">My Software</Button>
+          </Link>
+          <Link to="/shop">
+            <Button variant="neon" size="sm">Get Started</Button>
+          </Link>
         </div>
       </div>
     </nav>
